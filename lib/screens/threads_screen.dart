@@ -12,6 +12,9 @@ class ThreadsScreen extends StatefulWidget {
 class _ThreadsScreenState extends State<ThreadsScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final ScrollController _scrollController = ScrollController();
+  final TextEditingController _newPostController = TextEditingController();
+  Set<String> selectedCategories = {};
+  bool _canPost = false;
   
   final List<LinearGradient> _gradients = [
     const LinearGradient(
@@ -30,130 +33,343 @@ class _ThreadsScreenState extends State<ThreadsScreen> with SingleTickerProvider
     Thread(
       id: '1',
       userId: 'user1',
-      username: 'johndoe',
+      username: 'techexplorer',
       userAvatar: 'https://picsum.photos/200',
-      text: 'Just streamed for 4 hours! Thanks to everyone who joined 🎮 Had an amazing time playing with viewers',
+      text: 'Just checked out the new AI tools for content creation! 🤖 The possibilities are endless. Who else is excited about the future of AI? #AI #tech #innovation',
       timestamp: DateTime.now().subtract(const Duration(minutes: 5)),
       vibes: 423,
       waves: 48,
       echoes: 12,
-      tags: ['gaming', 'stream', 'community'],
-      mood: 'energetic',
+      tags: ['tech', 'AI', 'future'],
+      mood: 'excited',
       bgColor: '0xFF1A1A1A',
     ),
     Thread(
       id: '2',
       userId: 'user2',
-      username: 'sarahsmith',
+      username: 'gamingpro',
       userAvatar: 'https://picsum.photos/201',
-      text: 'New video dropping tomorrow! Get ready for something special ✨',
-      timestamp: DateTime.now().subtract(const Duration(hours: 2)),
+      text: 'LIVE NOW: Streaming some competitive matches! Come join and chat 🎮 #gaming #esports',
+      media: ['https://picsum.photos/400/300'],
+      timestamp: DateTime.now().subtract(const Duration(hours: 1)),
       vibes: 892,
       waves: 145,
       echoes: 67,
-      tags: ['content', 'creator'],
-      mood: 'excited',
-      bgColor: '0xFF1A1A1A',
+      tags: ['gaming', 'streaming'],
+      mood: 'energetic',
+      bgColor: '0xFF2C3E50',
     ),
     Thread(
       id: '3',
       userId: 'user3',
-      username: 'alexcreates',
+      username: 'cryptonews',
       userAvatar: 'https://picsum.photos/202',
-      text: 'Who else is streaming tonight? Let\'s raid each other\'s streams! 🎥',
-      timestamp: DateTime.now().subtract(const Duration(hours: 4)),
-      vibes: 245,
+      text: 'Market Analysis: Interesting developments in the crypto space today. What are your thoughts on the latest trends? 📊 #crypto #trading #blockchain',
+      timestamp: DateTime.now().subtract(const Duration(hours: 2)),
+      vibes: 567,
       waves: 89,
-      echoes: 23,
-      tags: ['streaming', 'community'],
-      mood: 'social',
+      echoes: 34,
+      tags: ['crypto', 'finance'],
+      mood: 'analytical',
       bgColor: '0xFF1A1A1A',
     ),
     Thread(
       id: '4',
       userId: 'user4',
-      username: 'gamergirl',
+      username: 'devlife',
       userAvatar: 'https://picsum.photos/203',
-      text: 'Today\'s stream was wild! Managed to get a 20 kill streak in Valorant 🎯 Thanks for all the support fam!',
-      media: ['https://picsum.photos/400/301'],
-      timestamp: DateTime.now().subtract(const Duration(hours: 6)),
+      text: 'Finally solved that bug that\'s been haunting me for days! Pro tip: Always check your async/await statements 😅 #coding #development #bugfix',
+      timestamp: DateTime.now().subtract(const Duration(hours: 3)),
       vibes: 756,
       waves: 234,
       echoes: 89,
-      tags: ['gaming', 'valorant'],
-      mood: 'hyped',
+      tags: ['coding', 'dev'],
+      mood: 'accomplished',
       bgColor: '0xFF2C3E50',
     ),
     Thread(
       id: '5',
       userId: 'user5',
-      username: 'musicproducer',
+      username: 'artcreator',
       userAvatar: 'https://picsum.photos/204',
-      text: 'Working on a new beat 🎵 Can\'t wait to showcase it in tonight\'s stream!',
-      timestamp: DateTime.now().subtract(const Duration(hours: 8)),
-      vibes: 432,
-      waves: 67,
-      echoes: 21,
-      tags: ['music', 'producer'],
+      text: 'New digital art piece finished! Exploring themes of technology and nature 🎨 What do you think? #digitalart #creativity',
+      media: ['https://picsum.photos/400/301'],
+      timestamp: DateTime.now().subtract(const Duration(hours: 4)),
+      vibes: 932,
+      waves: 167,
+      echoes: 78,
+      tags: ['art', 'digital'],
       mood: 'creative',
       bgColor: '0xFF1A1A1A',
     ),
     Thread(
       id: '6',
       userId: 'user6',
-      username: 'artcreator',
+      username: 'startupfounder',
       userAvatar: 'https://picsum.photos/205',
-      text: '🎨 Live art session in 2 hours! We\'ll be creating digital portraits together.',
-      media: ['https://picsum.photos/400/302'],
-      timestamp: DateTime.now().subtract(const Duration(hours: 10)),
-      vibes: 543,
-      waves: 98,
-      echoes: 45,
-      tags: ['art', 'digital'],
-      mood: 'inspired',
+      text: 'Just launched our beta! Looking for early users to test our new productivity app. DM if interested! 🚀 #startup #entrepreneurship',
+      timestamp: DateTime.now().subtract(const Duration(hours: 5)),
+      vibes: 445,
+      waves: 123,
+      echoes: 56,
+      tags: ['startup', 'tech'],
+      mood: 'excited',
       bgColor: '0xFF2C3E50',
     ),
     Thread(
       id: '7',
       userId: 'user7',
-      username: 'cosplayer',
+      username: 'cybersec',
       userAvatar: 'https://picsum.photos/206',
-      text: 'Cosplay reveal stream tomorrow! Any guesses which character I\'ll be showing? 👀',
-      timestamp: DateTime.now().subtract(const Duration(hours: 12)),
-      vibes: 876,
-      waves: 345,
-      echoes: 123,
-      tags: ['cosplay', 'anime'],
-      mood: 'excited',
+      text: 'Important reminder: Update your passwords regularly and use 2FA! Security first 🔒 #cybersecurity #privacy',
+      timestamp: DateTime.now().subtract(const Duration(hours: 6)),
+      vibes: 678,
+      waves: 234,
+      echoes: 145,
+      tags: ['security', 'tech'],
+      mood: 'serious',
       bgColor: '0xFF1A1A1A',
     ),
     Thread(
       id: '8',
       userId: 'user8',
-      username: 'techreview',
+      username: 'aienthusiast',
       userAvatar: 'https://picsum.photos/207',
-      text: 'Live unboxing of the latest gaming gear! Join me to see what\'s inside 📦',
-      media: ['https://picsum.photos/400/303'],
-      timestamp: DateTime.now().subtract(const Duration(hours: 14)),
-      vibes: 654,
-      waves: 187,
-      echoes: 76,
-      tags: ['tech', 'unboxing'],
-      mood: 'curious',
+      text: 'Fascinating developments in machine learning today! The new models are showing incredible potential 🤖 #AI #ML #future',
+      media: ['https://picsum.photos/400/302'],
+      timestamp: DateTime.now().subtract(const Duration(hours: 7)),
+      vibes: 889,
+      waves: 345,
+      echoes: 234,
+      tags: ['AI', 'tech'],
+      mood: 'fascinated',
       bgColor: '0xFF2C3E50',
     ),
   ];
+
+  void _addNewPost(String text) {
+    if (text.trim().isNotEmpty) {
+      setState(() {
+        _threads.insert(0, Thread(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          userId: 'current_user',
+          username: 'you',
+          userAvatar: 'https://picsum.photos/208',
+          text: text,
+          timestamp: DateTime.now(),
+          vibes: 0,
+          waves: 0,
+          echoes: 0,
+          tags: [],
+          mood: 'default',
+          bgColor: '0xFF1A1A1A',
+        ));
+      });
+    }
+  }
+
+  void _showCategoriesDialog() {
+    final availableCategories = [
+      'Tech', 'Business', 'AI', 'Sports', 'Games', 
+      'Art', 'Music', 'Fashion', 'Food', 'Travel'
+    ];
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: Colors.grey[900],
+              title: const Text(
+                'Select Categories',
+                style: TextStyle(color: Colors.white),
+              ),
+              content: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: availableCategories.map((category) {
+                  final isSelected = selectedCategories.contains(category);
+                  return FilterChip(
+                    selected: isSelected,
+                    label: Text(category),
+                    onSelected: (bool selected) {
+                      setState(() {
+                        if (selected) {
+                          selectedCategories.add(category);
+                        } else {
+                          selectedCategories.remove(category);
+                        }
+                      });
+                    },
+                    selectedColor: AppTheme.accentColor,
+                    checkmarkColor: Colors.white,
+                    backgroundColor: Colors.grey[800],
+                    labelStyle: TextStyle(
+                      color: isSelected ? Colors.white : Colors.grey[300],
+                    ),
+                  );
+                }).toList(),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('Cancel', style: TextStyle(color: Colors.grey[400])),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Save', style: TextStyle(color: AppTheme.accentColor)),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showNewPostSheet() {
+    _newPostController.clear();
+    _canPost = false;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.8,
+            decoration: const BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            child: Column(
+              children: [
+                const SizedBox(height: 12),
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[600],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Colors.grey[800],
+                        child: const Icon(Icons.person, color: Colors.white),
+                      ),
+                      const SizedBox(width: 12),
+                      const Text(
+                        'New Post',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const Spacer(),
+                      TextButton(
+                        onPressed: _canPost
+                            ? () {
+                                _addNewPost(_newPostController.text);
+                                Navigator.pop(context);
+                              }
+                            : null,
+                        child: Text(
+                          'Post',
+                          style: TextStyle(
+                            color: _canPost
+                                ? AppTheme.accentColor
+                                : Colors.grey[600],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: _newPostController,
+                    decoration: const InputDecoration(
+                      hintText: 'What\'s on your mind?',
+                      hintStyle: TextStyle(color: Colors.grey),
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                    ),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                    maxLines: null,
+                    textCapitalization: TextCapitalization.sentences,
+                    autofocus: true,
+                    onChanged: (text) {
+                      setState(() {
+                        _canPost = text.trim().isNotEmpty;
+                      });
+                    },
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[900],
+                    border: Border(
+                      top: BorderSide(color: Colors.grey[800]!, width: 0.5),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.image, color: Colors.white),
+                        onPressed: () {
+                          // Handle image upload
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.tag, color: Colors.white),
+                        onPressed: () {
+                          // Handle adding tags
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _newPostController.addListener(() {
+      setState(() {
+        _canPost = _newPostController.text.trim().isNotEmpty;
+      });
+    });
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     _scrollController.dispose();
+    _newPostController.dispose();
     super.dispose();
   }
 
@@ -179,6 +395,13 @@ class _ThreadsScreenState extends State<ThreadsScreen> with SingleTickerProvider
                   ),
                 ),
               ),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.category_outlined),
+                  onPressed: _showCategoriesDialog,
+                ),
+                const SizedBox(width: 8),
+              ],
               bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(42),
                 child: Container(
@@ -233,7 +456,7 @@ class _ThreadsScreenState extends State<ThreadsScreen> with SingleTickerProvider
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: _showNewPostSheet,
         backgroundColor: AppTheme.accentColor,
         child: const Icon(Icons.add, color: Colors.white),
       ),

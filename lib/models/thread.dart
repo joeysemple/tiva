@@ -6,13 +6,13 @@ class Thread {
   final String text;
   final List<String>? media;
   final DateTime timestamp;
-  final int vibes;
+  int vibes; // Made mutable to allow dynamic updates
   final int waves;
   final int echoes;
   final List<String> tags;
   final String mood;
   final String bgColor;
-  final bool hasVibed;
+  bool hasVibed; // Made mutable to allow dynamic updates
   final bool hasEchoed;
 
   Thread({
@@ -23,13 +23,13 @@ class Thread {
     required this.text,
     this.media,
     required this.timestamp,
-    required this.vibes,
+    this.vibes = 0, // Default to 0
     required this.waves,
     required this.echoes,
     required this.tags,
     required this.mood,
     required this.bgColor,
-    this.hasVibed = false,
+    this.hasVibed = false, // Default to false
     this.hasEchoed = false,
   });
 }
