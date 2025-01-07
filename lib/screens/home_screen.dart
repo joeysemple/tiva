@@ -49,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       viewers: 1234,
       thumbnailUrl: 'https://picsum.photos/800/1200',
       category: 'Gaming',
+      country: 'US', // Added country parameter
     ),
     LiveStream(
       id: '2',
@@ -59,6 +60,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       viewers: 567,
       thumbnailUrl: 'https://picsum.photos/800/1201',
       category: 'Music',
+      country: 'UK', // Added country parameter
     ),
     LiveStream(
       id: '3',
@@ -69,6 +71,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       viewers: 890,
       thumbnailUrl: 'https://picsum.photos/800/1202',
       category: 'Cooking',
+      country: 'IT', // Added country parameter
     ),
   ];
 

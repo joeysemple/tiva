@@ -7,6 +7,7 @@ class LiveStream {
   final int viewers;
   final String thumbnailUrl;
   final String category;
+  final String country;
 
   LiveStream({
     required this.id,
@@ -17,5 +18,6 @@ class LiveStream {
     required this.viewers,
     required this.thumbnailUrl,
     required this.category,
+    required this.country,
   });
 }
