@@ -5,6 +5,15 @@ allprojects {
     }
 }
 
+// Add namespace for share_plus manually to resolve the issue
+subprojects {
+    afterEvaluate { project ->
+        if (project.name.contains("share_plus")) {
+            project.android.namespace = "dev.flutter.plugins.share"
+        }
+    }
+}
+
 rootProject.buildDir = "../build"
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
@@ -16,3 +25,4 @@ subprojects {
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
+

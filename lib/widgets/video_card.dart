@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:video_player/video_player.dart';
 import 'package:tiva/models/video.dart';
 import 'package:tiva/models/comment.dart';
@@ -8,11 +10,13 @@ import 'package:tiva/widgets/comments_sheet.dart';
 class VideoCard extends StatefulWidget {
   final Video video;
   final bool isActive;
+  final VoidCallback? onLike;
 
   const VideoCard({
     super.key,
     required this.video,
     required this.isActive,
+    this.onLike,
   });
 
   @override
@@ -88,8 +92,10 @@ class _VideoCardState extends State<VideoCard> {
                 color: Colors.white,
               ),
             ),
-          // Removed `const` here
-          _VideoOverlay(video: widget.video),
+          _VideoOverlay(
+            video: widget.video,
+            onLike: widget.onLike,
+          ),
         ],
       ),
     );
@@ -98,8 +104,12 @@ class _VideoCardState extends State<VideoCard> {
 
 class _VideoOverlay extends StatefulWidget {
   final Video video;
+  final VoidCallback? onLike;
 
-  const _VideoOverlay({required this.video});
+  const _VideoOverlay({
+    required this.video,
+    this.onLike,
+  });
 
   @override
   State<_VideoOverlay> createState() => _VideoOverlayState();
@@ -127,6 +137,31 @@ class _VideoOverlayState extends State<_VideoOverlay> {
       likes: 24,
     ),
   ];
+
+  bool _isLiked = false;
+
+  void _likeVideo() {
+    setState(() {
+      _isLiked = !_isLiked;
+      if (_isLiked) {
+        Fluttertoast.showToast(
+          msg: "Video Liked!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          backgroundColor: Colors.black,
+          textColor: Colors.white,
+        );
+      }
+    });
+  }
+
+  void _shareVideo(String videoUrl) {
+    if (videoUrl.isNotEmpty) {
+      Share.share('Check out this video: $videoUrl');
+    } else {
+      debugPrint('No video URL provided.');
+    }
+  }
 
   void _showComments(BuildContext context) {
     showModalBottomSheet(
@@ -231,7 +266,8 @@ class _VideoOverlayState extends State<_VideoOverlay> {
                   _buildActionButton(
                     icon: Icons.favorite,
                     label: _formatNumber(widget.video.likes),
-                    color: widget.video.isLiked ? AppTheme.accentColor : Colors.white,
+                    color: _isLiked ? Colors.red : Colors.white,
+                    onTap: _likeVideo,
                   ),
                   const SizedBox(height: 20),
                   _buildActionButton(
@@ -242,7 +278,8 @@ class _VideoOverlayState extends State<_VideoOverlay> {
                   const SizedBox(height: 20),
                   _buildActionButton(
                     icon: Icons.reply,
-                    label: _formatNumber(widget.video.shares),
+                    label: 'Share',
+                    onTap: () => _shareVideo(widget.video.videoUrl),
                   ),
                 ],
               ),
@@ -253,3 +290,5 @@ class _VideoOverlayState extends State<_VideoOverlay> {
     );
   }
 }
+
+

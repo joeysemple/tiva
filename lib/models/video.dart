@@ -4,10 +4,10 @@ class Video {
   final String username;
   final String userAvatar;
   final String caption;
-  final int likes;
+  int likes;
   final int comments;
   final int shares;
-  final bool isLiked;
+  bool isLiked;
 
   Video({
     required this.id,

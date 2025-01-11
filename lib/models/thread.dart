@@ -1,3 +1,5 @@
+import 'comment.dart'; // Assuming there's a Comment model
+
 class Thread {
   final String id;
   final String userId;
@@ -14,6 +16,7 @@ class Thread {
   final String bgColor;
   bool hasVibed; // Made mutable to allow dynamic updates
   final bool hasEchoed;
+  final List<Comment> comments; // New field for comments
 
   Thread({
     required this.id,
@@ -31,5 +34,7 @@ class Thread {
     required this.bgColor,
     this.hasVibed = false, // Default to false
     this.hasEchoed = false,
+    this.comments = const [], // Default to an empty list
   });
 }
+

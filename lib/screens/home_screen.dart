@@ -75,6 +75,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     ),
   ];
 
+  void _handleLike(int index) {
+    setState(() {
+      _videos[index].isLiked = !_videos[index].isLiked;
+      _videos[index].likes += _videos[index].isLiked ? 1 : -1;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -163,6 +170,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         return VideoCard(
           video: _videos[index],
           isActive: _currentVideoIndex == index,
+          onLike: () => _handleLike(index),
         );
       },
     );

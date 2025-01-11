@@ -1,4 +1,6 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.tiva"> <!-- Replace with your app's actual package name -->
+    
     <application
         android:label="tiva"
         android:name="${applicationName}"
@@ -43,3 +45,4 @@
         </intent>
     </queries>
 </manifest>
+
