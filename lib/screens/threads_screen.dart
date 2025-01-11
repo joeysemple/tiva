@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/thread.dart';
 import '../themes/app_theme.dart';
+import '../screens/post_details_screen.dart';
 
 class ThreadsScreen extends StatefulWidget {
   const ThreadsScreen({super.key});
@@ -492,100 +493,114 @@ class _ThreadCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        gradient: gradient,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(thread.userAvatar),
-                ),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '@${thread.username}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 4,
-                            color: Colors.black45,
-                          ),
-                        ],
+    return InkWell(
+      onTap: () {
+        print("Card tapped!"); // Debug print
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              print("Building PostDetailsScreen"); // Debug print
+              return PostDetailsScreen(thread: thread);
+            },
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          gradient: gradient,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundImage: NetworkImage(thread.userAvatar),
+                  ),
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '@${thread.username}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                          color: Colors.white,
+                          shadows: [
+                            Shadow(
+                              blurRadius: 4,
+                              color: Colors.black45,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    Text(
-                      _getTimeAgo(thread.timestamp),
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.8),
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
+                      Text(
+                        _getTimeAgo(thread.timestamp),
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.8),
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              thread.text,
-              style: const TextStyle(
-                fontSize: 15,
-                color: Colors.white,
-                height: 1.3,
-                shadows: [
-                  Shadow(
-                    blurRadius: 4,
-                    color: Colors.black45,
+                    ],
                   ),
                 ],
               ),
-            ),
-            if (thread.media != null) ...[
               const SizedBox(height: 12),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  thread.media!.first,
-                  fit: BoxFit.cover,
+              Text(
+                thread.text,
+                style: const TextStyle(
+                  fontSize: 15,
+                  color: Colors.white,
+                  height: 1.3,
+                  shadows: [
+                    Shadow(
+                      blurRadius: 4,
+                      color: Colors.black45,
+                    ),
+                  ],
                 ),
               ),
-            ],
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildInteractionButton(
-                  icon: Icons.favorite,
-                  label: thread.vibes.toString(),
-                  isActive: thread.hasVibed,
-                  color: AppTheme.accentColor,
-                ),
-                _buildInteractionButton(
-                  icon: Icons.chat_bubble_outline,
-                  label: thread.waves.toString(),
-                ),
-                _buildInteractionButton(
-                  icon: Icons.repeat,
-                  label: thread.echoes.toString(),
-                  isActive: thread.hasEchoed,
+              if (thread.media != null) ...[
+                const SizedBox(height: 12),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    thread.media!.first,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ],
-            ),
-          ],
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildInteractionButton(
+                    icon: Icons.favorite,
+                    label: thread.vibes.toString(),
+                    isActive: thread.hasVibed,
+                    color: AppTheme.accentColor,
+                  ),
+                  _buildInteractionButton(
+                    icon: Icons.chat_bubble_outline,
+                    label: thread.waves.toString(),
+                  ),
+                  _buildInteractionButton(
+                    icon: Icons.repeat,
+                    label: thread.echoes.toString(),
+                    isActive: thread.hasEchoed,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

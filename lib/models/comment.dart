@@ -6,7 +6,7 @@ class Comment {
   final String text;
   final DateTime timestamp;
   final int likes;
-  final bool isLiked;
+  bool isLiked;
 
   Comment({
     required this.id,
@@ -15,7 +15,7 @@ class Comment {
     required this.userAvatar,
     required this.text,
     required this.timestamp,
-    required this.likes,
+    this.likes = 0,
     this.isLiked = false,
   });
 }

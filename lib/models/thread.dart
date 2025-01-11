@@ -1,4 +1,4 @@
-import 'comment.dart'; // Assuming there's a Comment model
+import 'comment.dart';
 
 class Thread {
   final String id;
@@ -8,15 +8,15 @@ class Thread {
   final String text;
   final List<String>? media;
   final DateTime timestamp;
-  int vibes; // Made mutable to allow dynamic updates
+  int vibes;
   final int waves;
   final int echoes;
   final List<String> tags;
   final String mood;
   final String bgColor;
-  bool hasVibed; // Made mutable to allow dynamic updates
+  bool hasVibed;
   final bool hasEchoed;
-  final List<Comment> comments; // New field for comments
+  final List<Comment> comments;
 
   Thread({
     required this.id,
@@ -26,15 +26,14 @@ class Thread {
     required this.text,
     this.media,
     required this.timestamp,
-    this.vibes = 0, // Default to 0
+    this.vibes = 0,
     required this.waves,
     required this.echoes,
     required this.tags,
     required this.mood,
     required this.bgColor,
-    this.hasVibed = false, // Default to false
+    this.hasVibed = false,
     this.hasEchoed = false,
-    this.comments = const [], // Default to an empty list
+    this.comments = const [],
   });
 }
-
