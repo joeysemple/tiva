@@ -636,7 +636,7 @@ class _ThreadsScreenState extends State<ThreadsScreen> with SingleTickerProvider
   }
 }
 
-class _ThreadCard extends StatelessWidget {
+class _ThreadCard extends StatefulWidget {
   final Thread thread;
   final LinearGradient gradient;
 
@@ -645,6 +645,11 @@ class _ThreadCard extends StatelessWidget {
     required this.gradient,
   });
 
+  @override
+  State<_ThreadCard> createState() => _ThreadCardState();
+}
+
+class _ThreadCardState extends State<_ThreadCard> {
   String _getTimeAgo(DateTime timestamp) {
     final now = DateTime.now();
     final difference = now.difference(timestamp);
@@ -660,25 +665,64 @@ class _ThreadCard extends StatelessWidget {
     } else {
       return 'now';
     }
-  }@override
+  }
+
+  void _handleVibeTap() {
+    setState(() {
+      if (widget.thread.hasVibed) {
+        widget.thread.vibes--;
+        widget.thread.hasVibed = false;
+      } else {
+        widget.thread.vibes++;
+        widget.thread.hasVibed = true;
+      }
+    });
+  }
+
+  Widget _buildInteractionButton({
+    required IconData icon,
+    required String label,
+    bool isActive = false,
+    Color? color,
+    VoidCallback? onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            size: 20,
+            color: isActive ? (color ?? Colors.white) : Colors.grey[400],
+          ),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: TextStyle(
+              color: isActive ? (color ?? Colors.white) : Colors.grey[400],
+              fontSize: 14,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        print("Card tapped!"); // Debug print
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) {
-              print("Building PostDetailsScreen"); // Debug print
-              return PostDetailsScreen(thread: thread);
-            },
+            builder: (context) => PostDetailsScreen(thread: widget.thread),
           ),
         );
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          gradient: gradient,
+          gradient: widget.gradient,  // Changed from gradient to widget.gradient
           borderRadius: BorderRadius.circular(20),
         ),
         child: Padding(
@@ -690,14 +734,14 @@ class _ThreadCard extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 20,
-                    backgroundImage: NetworkImage(thread.userAvatar),
+                    backgroundImage: NetworkImage(widget.thread.userAvatar),
                   ),
                   const SizedBox(width: 12),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '@${thread.username}',
+                        '@${widget.thread.username}',
                         style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 16,
@@ -711,7 +755,7 @@ class _ThreadCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        _getTimeAgo(thread.timestamp),
+                        _getTimeAgo(widget.thread.timestamp),
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.8),
                           fontSize: 13,
@@ -724,7 +768,7 @@ class _ThreadCard extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                thread.text,
+                widget.thread.text,
                 style: const TextStyle(
                   fontSize: 15,
                   color: Colors.white,
@@ -737,12 +781,12 @@ class _ThreadCard extends StatelessWidget {
                   ],
                 ),
               ),
-              if (thread.media != null) ...[
+              if (widget.thread.media != null) ...[
                 const SizedBox(height: 12),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.network(
-                    thread.media!.first,
+                    widget.thread.media!.first,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -753,18 +797,19 @@ class _ThreadCard extends StatelessWidget {
                 children: [
                   _buildInteractionButton(
                     icon: Icons.favorite,
-                    label: thread.vibes.toString(),
-                    isActive: thread.hasVibed,
+                    label: widget.thread.vibes.toString(),
+                    isActive: widget.thread.hasVibed,
                     color: AppTheme.accentColor,
+                    onTap: _handleVibeTap,
                   ),
                   _buildInteractionButton(
                     icon: Icons.chat_bubble_outline,
-                    label: thread.waves.toString(),
+                    label: widget.thread.waves.toString(),
                   ),
                   _buildInteractionButton(
                     icon: Icons.repeat,
-                    label: thread.echoes.toString(),
-                    isActive: thread.hasEchoed,
+                    label: widget.thread.echoes.toString(),
+                    isActive: widget.thread.hasEchoed,
                   ),
                 ],
               ),
@@ -772,31 +817,6 @@ class _ThreadCard extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildInteractionButton({
-    required IconData icon,
-    required String label,
-    bool isActive = false,
-    Color? color,
-  }) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 20,
-          color: isActive ? (color ?? Colors.white) : Colors.grey[400],
-        ),
-        const SizedBox(width: 4),
-        Text(
-          label,
-          style: TextStyle(
-            color: isActive ? (color ?? Colors.white) : Colors.grey[400],
-            fontSize: 14,
-          ),
-        ),
-      ],
     );
   }
 }
