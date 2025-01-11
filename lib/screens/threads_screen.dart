@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/thread.dart';
+import '../models/comment.dart';
 import '../themes/app_theme.dart';
 import '../screens/post_details_screen.dart';
 
@@ -30,8 +31,7 @@ class _ThreadsScreenState extends State<ThreadsScreen> with SingleTickerProvider
     ),
   ];
 
-  final List<Thread> _threads = [
-    Thread(
+  final List<Thread> _threads = [Thread(
       id: '1',
       userId: 'user1',
       username: 'techexplorer',
@@ -44,6 +44,26 @@ class _ThreadsScreenState extends State<ThreadsScreen> with SingleTickerProvider
       tags: ['tech', 'AI', 'future'],
       mood: 'excited',
       bgColor: '0xFF1A1A1A',
+      comments: [
+        Comment(
+          id: 'c1',
+          userId: 'user5',
+          username: 'airesearcher',
+          userAvatar: 'https://picsum.photos/211',
+          text: 'The latest developments in AI are truly mind-blowing! Have you tried the new image generation models?',
+          timestamp: DateTime.now().subtract(const Duration(minutes: 2)),
+          likes: 15,
+        ),
+        Comment(
+          id: 'c2',
+          userId: 'user6',
+          username: 'techenthusiast',
+          userAvatar: 'https://picsum.photos/212',
+          text: 'I\'ve been using these tools for my work. They\'ve improved productivity significantly!',
+          timestamp: DateTime.now().subtract(const Duration(minutes: 3)),
+          likes: 8,
+        ),
+      ],
     ),
     Thread(
       id: '2',
@@ -59,8 +79,36 @@ class _ThreadsScreenState extends State<ThreadsScreen> with SingleTickerProvider
       tags: ['gaming', 'streaming'],
       mood: 'energetic',
       bgColor: '0xFF2C3E50',
-    ),
-    Thread(
+      comments: [
+        Comment(
+          id: 'c3',
+          userId: 'user7',
+          username: 'gamemaster',
+          userAvatar: 'https://picsum.photos/213',
+          text: 'Great stream! Those last few matches were intense! 🔥',
+          timestamp: DateTime.now().subtract(const Duration(minutes: 30)),
+          likes: 25,
+        ),
+        Comment(
+          id: 'c4',
+          userId: 'user8',
+          username: 'esportsfan',
+          userAvatar: 'https://picsum.photos/214',
+          text: 'That clutch play at the end was insane! Well played!',
+          timestamp: DateTime.now().subtract(const Duration(minutes: 45)),
+          likes: 18,
+        ),
+        Comment(
+          id: 'c5',
+          userId: 'user9',
+          username: 'prostreamer',
+          userAvatar: 'https://picsum.photos/215',
+          text: 'Thanks for the tips during the stream! Really helpful 👍',
+          timestamp: DateTime.now().subtract(const Duration(minutes: 50)),
+          likes: 12,
+        ),
+      ],
+    ),Thread(
       id: '3',
       userId: 'user3',
       username: 'cryptonews',
@@ -73,6 +121,26 @@ class _ThreadsScreenState extends State<ThreadsScreen> with SingleTickerProvider
       tags: ['crypto', 'finance'],
       mood: 'analytical',
       bgColor: '0xFF1A1A1A',
+      comments: [
+        Comment(
+          id: 'c6',
+          userId: 'user10',
+          username: 'cryptotrader',
+          userAvatar: 'https://picsum.photos/216',
+          text: 'The market volatility is definitely something to watch closely right now.',
+          timestamp: DateTime.now().subtract(const Duration(hours: 1)),
+          likes: 32,
+        ),
+        Comment(
+          id: 'c7',
+          userId: 'user11',
+          username: 'blockchain_dev',
+          userAvatar: 'https://picsum.photos/217',
+          text: 'The underlying technology is what really matters. Focus on the long-term potential.',
+          timestamp: DateTime.now().subtract(const Duration(hours: 1, minutes: 30)),
+          likes: 45,
+        ),
+      ],
     ),
     Thread(
       id: '4',
@@ -87,6 +155,26 @@ class _ThreadsScreenState extends State<ThreadsScreen> with SingleTickerProvider
       tags: ['coding', 'dev'],
       mood: 'accomplished',
       bgColor: '0xFF2C3E50',
+      comments: [
+        Comment(
+          id: 'c8',
+          userId: 'user12',
+          username: 'debugger',
+          userAvatar: 'https://picsum.photos/218',
+          text: 'Async bugs are the worst! Glad you figured it out! 🎉',
+          timestamp: DateTime.now().subtract(const Duration(hours: 2)),
+          likes: 28,
+        ),
+        Comment(
+          id: 'c9',
+          userId: 'user13',
+          username: 'codemaster',
+          userAvatar: 'https://picsum.photos/219',
+          text: 'Been there! Sometimes the simplest bugs take the longest to find.',
+          timestamp: DateTime.now().subtract(const Duration(hours: 2, minutes: 15)),
+          likes: 19,
+        ),
+      ],
     ),
     Thread(
       id: '5',
@@ -102,8 +190,27 @@ class _ThreadsScreenState extends State<ThreadsScreen> with SingleTickerProvider
       tags: ['art', 'digital'],
       mood: 'creative',
       bgColor: '0xFF1A1A1A',
-    ),
-    Thread(
+      comments: [
+        Comment(
+          id: 'c10',
+          userId: 'user14',
+          username: 'artlover',
+          userAvatar: 'https://picsum.photos/220',
+          text: 'The color palette is absolutely stunning! What software did you use?',
+          timestamp: DateTime.now().subtract(const Duration(hours: 3)),
+          likes: 56,
+        ),
+        Comment(
+          id: 'c11',
+          userId: 'user15',
+          username: 'designer',
+          userAvatar: 'https://picsum.photos/221',
+          text: 'Love how you blended the organic and digital elements! 😍',
+          timestamp: DateTime.now().subtract(const Duration(hours: 3, minutes: 30)),
+          likes: 41,
+        ),
+      ],
+    ),Thread(
       id: '6',
       userId: 'user6',
       username: 'startupfounder',
@@ -116,6 +223,26 @@ class _ThreadsScreenState extends State<ThreadsScreen> with SingleTickerProvider
       tags: ['startup', 'tech'],
       mood: 'excited',
       bgColor: '0xFF2C3E50',
+      comments: [
+        Comment(
+          id: 'c12',
+          userId: 'user16',
+          username: 'productmanager',
+          userAvatar: 'https://picsum.photos/222',
+          text: 'This looks promising! Just signed up for the beta. Love the UI so far!',
+          timestamp: DateTime.now().subtract(const Duration(hours: 4)),
+          likes: 23,
+        ),
+        Comment(
+          id: 'c13',
+          userId: 'user17',
+          username: 'techblogger',
+          userAvatar: 'https://picsum.photos/223',
+          text: 'Would love to feature this in my next tech review! DM sent.',
+          timestamp: DateTime.now().subtract(const Duration(hours: 4, minutes: 15)),
+          likes: 34,
+        ),
+      ],
     ),
     Thread(
       id: '7',
@@ -130,6 +257,26 @@ class _ThreadsScreenState extends State<ThreadsScreen> with SingleTickerProvider
       tags: ['security', 'tech'],
       mood: 'serious',
       bgColor: '0xFF1A1A1A',
+      comments: [
+        Comment(
+          id: 'c14',
+          userId: 'user18',
+          username: 'securityexpert',
+          userAvatar: 'https://picsum.photos/224',
+          text: 'Also recommend using a password manager! Makes life so much easier and safer.',
+          timestamp: DateTime.now().subtract(const Duration(hours: 5)),
+          likes: 67,
+        ),
+        Comment(
+          id: 'c15',
+          userId: 'user19',
+          username: 'privacyadvocate',
+          userAvatar: 'https://picsum.photos/225',
+          text: 'Don\'t forget about hardware security keys for critical accounts!',
+          timestamp: DateTime.now().subtract(const Duration(hours: 5, minutes: 30)),
+          likes: 45,
+        ),
+      ],
     ),
     Thread(
       id: '8',
@@ -145,10 +292,37 @@ class _ThreadsScreenState extends State<ThreadsScreen> with SingleTickerProvider
       tags: ['AI', 'tech'],
       mood: 'fascinated',
       bgColor: '0xFF2C3E50',
+      comments: [
+        Comment(
+          id: 'c16',
+          userId: 'user20',
+          username: 'mlresearcher',
+          userAvatar: 'https://picsum.photos/226',
+          text: 'The rate of progress in this field is absolutely incredible! Excited to see what\'s next.',
+          timestamp: DateTime.now().subtract(const Duration(hours: 6)),
+          likes: 89,
+        ),
+        Comment(
+          id: 'c17',
+          userId: 'user21',
+          username: 'techvisionary',
+          userAvatar: 'https://picsum.photos/227',
+          text: 'These advancements will revolutionize how we approach problem-solving!',
+          timestamp: DateTime.now().subtract(const Duration(hours: 6, minutes: 15)),
+          likes: 76,
+        ),
+        Comment(
+          id: 'c18',
+          userId: 'user22',
+          username: 'futurist',
+          userAvatar: 'https://picsum.photos/228',
+          text: 'Can\'t wait to see the practical applications in various industries!',
+          timestamp: DateTime.now().subtract(const Duration(hours: 6, minutes: 45)),
+          likes: 54,
+        ),
+      ],
     ),
-  ];
-
-  void _addNewPost(String text) {
+  ];void _addNewPost(String text) {
     if (text.trim().isNotEmpty) {
       setState(() {
         _threads.insert(0, Thread(
@@ -164,6 +338,7 @@ class _ThreadsScreenState extends State<ThreadsScreen> with SingleTickerProvider
           tags: [],
           mood: 'default',
           bgColor: '0xFF1A1A1A',
+          comments: [],
         ));
       });
     }
@@ -260,8 +435,7 @@ class _ThreadsScreenState extends State<ThreadsScreen> with SingleTickerProvider
                     color: Colors.grey[600],
                     borderRadius: BorderRadius.circular(2),
                   ),
-                ),
-                Padding(
+                ),Padding(
                   padding: const EdgeInsets.all(16),
                   child: Row(
                     children: [
@@ -353,9 +527,7 @@ class _ThreadsScreenState extends State<ThreadsScreen> with SingleTickerProvider
         ),
       ),
     );
-  }
-
-  @override
+  }@override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
@@ -427,8 +599,7 @@ class _ThreadsScreenState extends State<ThreadsScreen> with SingleTickerProvider
               ),
             ),
           ];
-        },
-        body: TabBarView(
+        },body: TabBarView(
           controller: _tabController,
           children: [
             ListView.builder(
@@ -489,9 +660,7 @@ class _ThreadCard extends StatelessWidget {
     } else {
       return 'now';
     }
-  }
-
-  @override
+  }@override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
