@@ -9,13 +9,13 @@ class Thread {
   final List<String>? media;
   final DateTime timestamp;
   int vibes;
-  final int waves;
-  final int echoes;
+  int waves;
+  int echoes;           // Made mutable
   final List<String> tags;
   final String mood;
   final String bgColor;
   bool hasVibed;
-  final bool hasEchoed;
+  bool hasEchoed;       // Made mutable
   final List<Comment> comments;
 
   Thread({
@@ -27,8 +27,8 @@ class Thread {
     this.media,
     required this.timestamp,
     this.vibes = 0,
-    required this.waves,
-    required this.echoes,
+    this.waves = 0,
+    this.echoes = 0,
     required this.tags,
     required this.mood,
     required this.bgColor,

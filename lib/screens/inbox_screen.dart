@@ -19,6 +19,175 @@ class Message {
   });
 }
 
+class ChatMessage {
+  final String content;
+  final DateTime timestamp;
+  final bool isSentByMe;
+
+  ChatMessage({
+    required this.content,
+    required this.timestamp,
+    required this.isSentByMe,
+  });
+}
+
+class MessageViewScreen extends StatefulWidget {
+  final Message message;
+  
+  const MessageViewScreen({super.key, required this.message});
+
+  @override
+  State<MessageViewScreen> createState() => _MessageViewScreenState();
+}
+
+class _MessageViewScreenState extends State<MessageViewScreen> {
+  final TextEditingController _replyController = TextEditingController();
+  final List<ChatMessage> _messages = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _messages.add(ChatMessage(
+      content: widget.message.messagePreview,
+      timestamp: widget.message.timestamp,
+      isSentByMe: false,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _replyController.dispose();
+    super.dispose();
+  }
+
+  void _sendReply() {
+    if (_replyController.text.trim().isEmpty) return;
+    
+    setState(() {
+      _messages.add(ChatMessage(
+        content: _replyController.text,
+        timestamp: DateTime.now(),
+        isSentByMe: true,
+      ));
+    });
+    
+    _replyController.clear();
+  }
+
+  Widget _buildMessageBubble(ChatMessage message) {
+    return Align(
+      alignment: message.isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        margin: EdgeInsets.only(
+          left: message.isSentByMe ? 64 : 0,
+          right: message.isSentByMe ? 0 : 64,
+          bottom: 8,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          color: message.isSentByMe 
+            ? AppTheme.accentColor 
+            : Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              message.content,
+              style: TextStyle(
+                color: message.isSentByMe ? Colors.white : null,
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              _formatMessageTime(message.timestamp),
+              style: TextStyle(
+                color: message.isSentByMe 
+                  ? Colors.white.withOpacity(0.7) 
+                  : Colors.grey,
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _formatMessageTime(DateTime time) {
+    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Row(
+          children: [
+            CircleAvatar(
+              radius: 16,
+              backgroundImage: NetworkImage(widget.message.senderAvatar),
+            ),
+            const SizedBox(width: 8),
+            Text(widget.message.senderName),
+          ],
+        ),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16),
+              reverse: true,
+              itemCount: _messages.length,
+              itemBuilder: (context, index) {
+                return _buildMessageBubble(_messages[_messages.length - 1 - index]);
+              },
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              border: Border(
+                top: BorderSide(color: Colors.grey.shade300),
+              ),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _replyController,
+                    decoration: const InputDecoration(
+                      hintText: 'Type your reply...',
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                    ),
+                    maxLines: null,
+                    textInputAction: TextInputAction.newline,
+                    onSubmitted: (_) => _sendReply(),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                IconButton(
+                  icon: const Icon(Icons.send),
+                  onPressed: _sendReply,
+                  color: AppTheme.accentColor,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class InboxScreen extends StatefulWidget {
   const InboxScreen({super.key});
 
@@ -84,6 +253,29 @@ class _InboxScreenState extends State<InboxScreen> with SingleTickerProviderStat
     super.dispose();
   }
 
+  void _openMessage(Message message) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MessageViewScreen(message: message),
+      ),
+    );
+    
+    setState(() {
+      final index = _messages.indexWhere((m) => m.id == message.id);
+      if (index != -1) {
+        _messages[index] = Message(
+          id: message.id,
+          senderAvatar: message.senderAvatar,
+          senderName: message.senderName,
+          messagePreview: message.messagePreview,
+          timestamp: message.timestamp,
+          isRead: true,
+        );
+      }
+    });
+  }
+
   String _formatTimestamp(DateTime timestamp) {
     final now = DateTime.now();
     final difference = now.difference(timestamp);
@@ -120,55 +312,55 @@ class _InboxScreenState extends State<InboxScreen> with SingleTickerProviderStat
       itemCount: filteredMessages.length,
       itemBuilder: (context, index) {
         final message = filteredMessages[index];
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Row(
-            children: [
-              // Avatar
-              CircleAvatar(
-                radius: 30,
-                backgroundImage: NetworkImage(message.senderAvatar),
-              ),
-              const SizedBox(width: 12),
-              
-              // Message details
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          message.senderName,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          _formatTimestamp(message.timestamp),
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      message.messagePreview,
-                      style: TextStyle(
-                        color: message.isRead ? Colors.grey : Colors.white,
-                        fontWeight: message.isRead ? FontWeight.normal : FontWeight.bold,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+        return InkWell(
+          onTap: () => _openMessage(message),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 30,
+                  backgroundImage: NetworkImage(message.senderAvatar),
                 ),
-              ),
-            ],
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            message.senderName,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            _formatTimestamp(message.timestamp),
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        message.messagePreview,
+                        style: TextStyle(
+                          color: message.isRead ? Colors.grey : Colors.white,
+                          fontWeight: message.isRead ? FontWeight.normal : FontWeight.bold,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
