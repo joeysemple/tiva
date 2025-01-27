@@ -1,26 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tiva/firebase_options.dart';
+import 'package:tiva/services/auth_service.dart';
+import 'package:tiva/services/theme_service.dart';
 import 'package:tiva/themes/app_theme.dart';
 import 'package:tiva/screens/home_screen.dart';
+import 'package:tiva/screens/auth/login_screen.dart';
+import 'package:tiva/screens/auth/register_screen.dart';
 import 'package:tiva/screens/threads_screen.dart';
 import 'package:tiva/screens/live_screen.dart';
 import 'package:tiva/screens/inbox_screen.dart';
 import 'package:tiva/screens/profile_screen.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  final prefs = await SharedPreferences.getInstance();
+  runApp(MyApp(prefs: prefs));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final SharedPreferences prefs;
+  
+  const MyApp({super.key, required this.prefs});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Tiva',
-      theme: AppTheme.darkTheme,
-      home: const MainScreen(),
-      debugShowCheckedModeBanner: false,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthService()),
+        ChangeNotifierProvider(create: (_) => ThemeService(prefs)),
+      ],
+      child: Consumer<ThemeService>(
+        builder: (context, themeService, _) {
+          return MaterialApp(
+            title: 'Tiva',
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: themeService.themeMode,
+            initialRoute: '/',
+            routes: {
+              '/': (context) => const MainScreen(),
+              '/login': (context) => const LoginScreen(),
+              '/register': (context) => const RegisterScreen(),
+              '/home': (context) => const HomeScreen(),
+            },
+            debugShowCheckedModeBanner: false,
+          );
+        },
+      ),
     );
   }
 }
@@ -66,7 +98,7 @@ class _MainScreenState extends State<MainScreen> {
               _selectedIndex = index;
             });
           },
-          backgroundColor: AppTheme.surfaceColor,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           elevation: 0,
           height: 64,
           labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
